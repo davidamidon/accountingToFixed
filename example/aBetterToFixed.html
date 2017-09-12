@@ -3,8 +3,7 @@
 
 // Function
 function aBetterToFixed(value, precision) {
-  // Create Variables
-  var decimalPlacesToMove = 2;
+  // Create Variables for storing string values.
   var valueSplit;
   var decimal;
   var valueLength;
@@ -21,9 +20,15 @@ function aBetterToFixed(value, precision) {
   var roundedLength;
   var finalNumber;
 
+
   // Check if value is a string and if not convert it to one.
   if(typeof value !== "string") {
-    value.toString();
+    value = value.toString();
+  }
+
+  // If no precision argument is passed, set precision to 0.
+  if(!precision) {
+    precision = 0;
   }
 
   // Perform operation against the string value.
@@ -39,10 +44,11 @@ function aBetterToFixed(value, precision) {
     }
   }
 
+  // Check if value is a whole number and if so return it.
   if(decimalPosition === undefined) {
     return value;
   } else {
-    // Work on the string to move the decimal the required number of positions.
+    // Otherwise work on the string to move the decimal the required number of positions.
     beforeDecimal = value.substring(0, decimalPosition);
     afterDecimal = value.substring(decimalPosition + 1, decimalPosition + 1 + precision);
     valueEnd = value.substring(decimalPosition + precision + 1, value.length);
@@ -52,7 +58,7 @@ function aBetterToFixed(value, precision) {
   // Round the new number.
   rounded = Math.round(newString);
 
-  // Reverse the string
+  // Perform operation against the rounded value.
   roundedString = rounded.toString();
   roundedSplit = roundedString.split('');
   roundedLength = roundedSplit.length;
@@ -62,10 +68,12 @@ function aBetterToFixed(value, precision) {
   roundedAfterDecimal = roundedString.substring(roundedSplit.length - precision, roundedSplit.length);
   finalNumber = roundedBeforeDecimal + decimal + roundedAfterDecimal;
 
+  // If finalNumber had no numbers to the left of the decimal, prepend a 0.
   if(finalNumber.match(/^\.\d*$/g)) {
     finalNumber = "0" + finalNumber;
   }
 
+  // If rounding to a whole number, return the original whole number portion of value.
   if(finalNumber.match(/^\d*\.$/g)) {
     finalNumber = beforeDecimal;
   }
@@ -73,23 +81,9 @@ function aBetterToFixed(value, precision) {
   return finalNumber;
 }
 
-/*
-
-function betterToFixed(value, precision) {
-  var exponentialForm = Number(value + 'e' + precision);
-  var rounded = Math.round(exponentialForm);
-  var finalResult = Number(rounded + 'e-' + precision);
-  return finalResult.toFixed(precision);
-}
-
-*/
-
-// Objects for testing
-
-
 // Tests
 tests({
-  'It should move the decimal to the right two places.': function() {
+  'It should return the new number based on the amount of precision rounding when passed a string as value.': function() {
     eq(aBetterToFixed('122.255', 1), '122.3');
     eq(aBetterToFixed('122.255', 2), '122.26');
     eq(aBetterToFixed('122.255', 3), '122.255');
@@ -97,10 +91,16 @@ tests({
     eq(aBetterToFixed('10.235', 2), '10.24');
     eq(aBetterToFixed('1.005', 2), '1.01');
   },
+  'It should return the new number based on the amount of precision rounding when passed a number as value.': function() {
+    eq(aBetterToFixed(122.255, 2), '122.26');
+    eq(aBetterToFixed(0.615, 2), '0.62');
+    eq(aBetterToFixed(10.235, 2), '10.24');
+    eq(aBetterToFixed(1.005, 2), '1.01');
+  },
   'It should return the whole number when 0 is passed as the precision argument.': function() {
     eq(aBetterToFixed('122.255', 0), '122');
     eq(aBetterToFixed('123', 0), '123');
-    eq(aBetterToFixed('456.5398', 0), '456');
+    eq(aBetterToFixed(456.5398, 0), '456');
   }
 });
 </script>
