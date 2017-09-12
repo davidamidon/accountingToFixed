@@ -13,6 +13,7 @@ function aBetterToFixed(value, precision) {
   var afterDecimal;
   var valueEnd;
   var newString;
+  var rounded;
 
   // Check if value is a string and if not convert it to one.
   if(typeof value !== "string") {
@@ -34,12 +35,36 @@ function aBetterToFixed(value, precision) {
 
   // Work on the string to move the decimal the required number of positions.
   beforeDecimal = value.substring(0, decimalPosition);
-  afterDecimal = value.substring(decimalPosition + 1, decimalPosition + 1 + decimalPlacesToMove);
-  valueEnd = value.substring(decimalPosition + decimalPlacesToMove + 1, value.length);
-  return newString = beforeDecimal + afterDecimal + decimal + valueEnd;
+  afterDecimal = value.substring(decimalPosition + 1, decimalPosition + 1 + precision);
+  valueEnd = value.substring(decimalPosition + precision + 1, value.length);
+  newString = beforeDecimal + afterDecimal + decimal + valueEnd;
 
-  console.log(newString);
+  // Round the new number.
+  rounded = Math.round(newString);
+
+  // Reverse the string
+  roundedString = rounded.toString();
+  roundedSplit = roundedString.split('');
+  roundedLength = roundedSplit.length;
+
+  // Work on the string to move the decimal the required number of positions.
+  roundedBeforeDecimal = roundedString.substring(0, roundedSplit.length - precision);
+  roundedAfterDecimal = roundedString.substring(roundedSplit.length - precision, roundedSplit.length);
+  finalNumber = roundedBeforeDecimal + decimal + roundedAfterDecimal;
+
+  console.log(finalNumber);
 }
+
+/*
+
+function betterToFixed(value, precision) {
+  var exponentialForm = Number(value + 'e' + precision);
+  var rounded = Math.round(exponentialForm);
+  var finalResult = Number(rounded + 'e-' + precision);
+  return finalResult.toFixed(precision);
+}
+
+*/
 
 // Objects for testing
 
